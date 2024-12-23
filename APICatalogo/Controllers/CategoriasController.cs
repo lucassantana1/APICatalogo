@@ -33,14 +33,22 @@ namespace APICatalogo.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Categoria>> Get()
         {
-            var categorias = _context.Categorias.AsNoTracking().ToList();
-
-            if (categorias is null)
+            try
             {
-                return NotFound();
-            }
+                var categorias = _context.Categorias.AsNoTracking().ToList();
 
-            return categorias;
+                if (categorias is null)
+                {
+                    return NotFound();
+                }
+
+                return categorias;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Ocorreu um problema ao tratar a sua localização");
+            }
         }
 
         [HttpGet("{id:int}", Name = "ObterCategoria")]
@@ -50,7 +58,7 @@ namespace APICatalogo.Controllers
 
             if (categoria is null)
             {
-                return NotFound("categoria nao encontrado...");
+                return NotFound($"categoriacom id={id} nao encontrado...");
             }
 
             return categoria;
